@@ -4,6 +4,7 @@ import mysql.connector
 import re
 
 # from ../util import write_list, emptyStringCheck, isNumericOrFloat, requestComplete, locateNextEntry, makeInputNumeric
+from config import port, database, user, password
 
 #global variables
 isbnRegEx = re.compile(r"[^0-9X]")
@@ -18,6 +19,12 @@ doc = doc.active
 sheet = doc[startpoint:endpoint]
 rowList = []
 rowCount=0
+
+#Database Actions
+database = mysql.connector.connect(host='localhost',port=port,db=database, user=user, passwd=password)
+cursor=database.cursor()
+query="""INSERT INTO listing (title,author,isbn,isbn13,cond,additional_information,upload_date,user_id,availability) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+
 
 for row in sheet:
     for cell in row:
