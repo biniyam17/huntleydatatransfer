@@ -1,6 +1,6 @@
-dept_insert_query = """INSERT INTO school_departments (school_id,department_code)
-            VALUES (1,%s)"""
-dept_check_query = """SELECT COUNT(1) FROM school_departments WHERE school_id = 1 AND code = %s"""
+dept_insert_query = """INSERT INTO school_departments (school_id,code)
+            VALUES (1,'ARBC')"""
+dept_check_query = """SELECT COUNT(1) FROM school_departments WHERE school_id = 1 AND code = 'ARBC'"""
 dept_select_query = """SELECT school_department_id FROM school_departments WHERE school_id = 1 AND code = %s"""
 
 professor_insert_query = """INSERT INTO professors (school_id,last_name)
