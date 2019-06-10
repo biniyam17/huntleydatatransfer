@@ -11,6 +11,6 @@ key='&key=AIzaSyAsj14BdEN97MLaK9JLe8tzuC5aCxGI2KY'
 
 # mySql database access credentials
 port = '3306'
-database = 'care_center'
+database = 'Huntley'
 user = 'root'
 password = 'root'

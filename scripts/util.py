@@ -52,6 +52,12 @@ def isNumericOrFloat(input):
     else:
         return False
 
+def is_ISBN_10(ISBN):
+    return len(str(ISBN)) == 10
+
+def is_ISBN_13(ISBN):
+    return len(str(ISBN)) == 13
+
 # requestComplete
 #
 # This function returns whether or not all of the requested rows were inputted

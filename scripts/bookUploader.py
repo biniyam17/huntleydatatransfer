@@ -30,5 +30,6 @@ for row in sheet:
     for cell in row:
         rowList.append(cell.value)
 
+
     rowCount += 1
     print ('* Row ' + str(rowCount))
