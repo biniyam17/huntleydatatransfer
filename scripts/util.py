@@ -16,12 +16,12 @@
 # @prints   string      statement + (list of items or Empty List)
 
 def write_list(statement, lst):
-    print statement
+    print (statement)
     if (len(lst) == 0):
-        print 'Empty List'
+        print ('Empty List')
     else:
         for item in lst:
-            print str(item) + ' '
+            print (str(item) + ' ')
 
 # emptyStringCheck
 #
@@ -70,7 +70,7 @@ def requestComplete(startpoint, endpoint, entriesMade):
         start = int(startpoint)
         end = int(endpoint)
     except ValueError:
-        print " ValueError in requestComplete"
+        print (" ValueError in requestComplete")
     else:
         expectedEntries = end - start + 1
         return expectedEntries == entriesMade
@@ -92,7 +92,7 @@ def locateNextEntry(startpoint, endpoint, entriesMade):
     try:
         start = int(startpoint)
     except ValueError:
-        print " ValueError in locateNextEntry"
+        print (" ValueError in locateNextEntry")
     else:
         return start + entriesMade
 
