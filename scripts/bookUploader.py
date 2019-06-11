@@ -7,9 +7,9 @@ import re
 from config import port, database, user, password
 from sanitizer import *
 from sql import *
+
 #global variables
 isbnRegEx = re.compile(r"[^0-9X]")
-
 startpoint = 'B' + str(2)
 endpoint = 'I' + str(280)
 
@@ -25,35 +25,25 @@ rowCount=0
 database = mysql.connector.connect(host='localhost',port=port,db=database, user=user, passwd=password)
 cursor=database.cursor()
 
-
-# for row in sheet:
-#     for cell in row:
-#         rowList.append(cell.value)
-
-    #Dept
-    # if not (is_valid_dept(rowList[0])):
-    #     print ("not valid")
-
 dept_list = {
 "ARBC" : 1,
-"ARBC" : 2,
-"ECON" : 3,
-"FHS" : 4,
-"FREN" : 5,
-"FWS" : 6,
-"GOVT" : 7,
-"HIST" : 8,
-"KORE" : 9,
-"LEAD" : 10,
-"LIT" : 11,
-"MATH" : 12,
-"PHIL" : 13,
-"PONT" : 14,
-"PORT" : 15,
-"PPE" : 16,
-"PSYC" : 17,
-"RLST" : 18,
-"SPAN" : 19,
+"ECON" : 2,
+"FHS" : 3,
+"FREN" : 4,
+"FWS" : 5,
+"GOVT" : 6,
+"HIST" : 7,
+"KORE" : 8,
+"LEAD" : 9,
+"LIT" : 10,
+"MATH" : 11,
+"PHIL" : 12,
+"PONT" : 13,
+"PORT" : 14,
+"PPE" : 15,
+"PSYC" : 16,
+"RLST" : 17,
+"SPAN" : 18,
     }
 
 prof_list = {
@@ -146,23 +136,29 @@ prof_list = {
 for element in dept_list:
     print (element)
     cursor.execute(dept_insert_query, (element,))
-    # result = cursor.fetchone()
-    # print (result[0])
-    # cursor.execute(dept_insert_query)
     database.commit()
-for element in prof_list:
-    print (element)
-    cursor.execute(professor_insert_query, (element,))
-    database.commit()
+# for element in prof_list:
+#     print (element)
+#     cursor.execute(professor_insert_query, (element,))
+#     database.commit()
 
-    # if (cursor.execute(dept_check_query,(rowList[0])) == 0):
-    #     cursor.execute(dept_insert_query, (rowList[0]) )
-    # else:
-    #     cursor.execute(dept_select_query, (rowList[0]) )
-
-    # if rowCount == 1:
-    #     print ("break")
-    #     break
-    #
-    # rowCount += 1
-    # print ('* Row ' + str(rowCount))
+# for row in sheet:
+#     for cell in row:
+#         rowList.append(cell.value)
+#     # rowCount = rowCount + 1
+#     # print(rowCount)
+#     # print(rowList[2])
+#     professor = encoder(rowList[2])
+#     # if professor not in prof_list:
+#     #     print ("PROF NOT FOUND IN LIST")
+#     department = encoder(rowList[0])
+#     # if department not in dept_list:
+#     #     print ("DEPT NOT FOUND IN LIST")
+#     print (professor)
+#     print (department)
+#     print (prof_list.get(professor))
+#     print (dept_list.get(department))
+#     # cursor.execute(prof_dept_insert_query,
+#     # (prof_list.get(professor),dept_list.get(department),))
+#     # database.commit()
+#     rowList=[]

@@ -4,7 +4,7 @@ def is_valid_dept(dept):
     return not emptyStringCheck(dept)
 
 def encoder(input):
-    return str(input).encode('utf-8').strip()
+    return str(input).strip()
 
 def is_valid_course(course_input):
     return not emptyStringCheck(course_input) and isNumericOrFloat(course_input)
