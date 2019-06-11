@@ -1,4 +1,4 @@
-.DS_Store
+*.DS_Store
 .idea/
-scripts/.DS_Store
-scripts/__pycache__/
+*.pyc
+*~$
