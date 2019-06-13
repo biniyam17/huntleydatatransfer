@@ -32,6 +32,24 @@ def insert_professors(sheet, cursor, database, dict):
     print ("Succesfully inserted all professors")
 
 #unique only
+def insert_books(sheet, cursor, database, dict):
+    rowList = []
+    rowCount = 0
+    for row in sheet:
+        for cell in row:
+            rowList.append(cell.value)
+        isbn = rowList[0]
+        title = rowList[1]
+        edition = rowList[2]
+        if (isbn is None and title is None):
+            print ("End of column reached. break.")
+            break
+        cursor.execute(book_insert_query, (isbn,title,edition,))
+        rowList = []
+        database.commit()
+    print ("Succesfully inserted all books")
+
+#unique only
 def insert_courses(sheet, cursor, database, semester_id, i, j, prof_dict):
     rowList = []
     rowCount = 0
@@ -80,4 +98,27 @@ def insert_course_depts(sheet, cursor, database, i, j, dept_dict, course_code_to
             print ("dept id is " + str(dept_id) )
             print ("course is " + encoder(rowList[j]) )
             raise
+    print ("Succesfully inserted all course departments")
+
+def insert_course_books(sheet, cursor, database, book_dict, course_code_to_id_map):
+    rowList = []
+    rowCount = 0
+    for row in sheet:
+        for cell in row:
+            rowList.append(cell.value)
+        rowCount = rowCount + 1
+        print (rowCount)
+        if (rowList[0] is None and rowList[1] is None):
+            print ("End of column reached. break.")
+            break
+        book_id = book_dict.get(encoder(rowList[1]))
+        course_id = course_code_to_id_map.get(encoder(rowList[0]))
+        if (course_id is None or book_id is None):
+            print ("Could not find corresponding ids.")
+            print (str(rowList[0]) + " " + str(rowList[1]))
+            print (str(course_id) + " " + str(book_id))
+            break
+        cursor.execute(course_book_insert_query, (book_id, course_id,))
+        rowList = []
+        database.commit()
     print ("Succesfully inserted all course departments")
