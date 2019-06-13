@@ -1,5 +1,6 @@
 from sanitizer import *
 from sql import *
+from gBooksUtil import *
 
 # Checks that each cell in a given column exists in the passed in dictionary
 # @precondition: dict should have all unique values of the given column
@@ -122,3 +123,30 @@ def insert_course_books(sheet, cursor, database, book_dict, course_code_to_id_ma
         rowList = []
         database.commit()
     print ("Succesfully inserted all course departments")
+
+def write_google_books_api_responses(doc, sheet):
+    print("start of function")
+    rowList = []
+    rowCount = 0
+    unique_authors = []
+    for row in sheet:
+        for cell in row:
+            rowList.append(cell.value)
+        rowCount = rowCount + 1
+        print (rowCount)
+        isbn13 = rowList[0]
+        existingTitle = rowList[2]
+        print (isbn13)
+        print (existingTitle)
+        response = makeGoogleBooksApiCall(isbn13)
+        if not isApiResponseValid(response):
+            continue
+        isbn10 = parseOtherIsbn(isbn13, response)
+        title = parseTitle(response, existingTitle)
+        authors = parseAuthors(response)
+        print (str(isbn10))
+        print (str(title))
+        print (authors)
+        # isbn10_field = sheet.cell(row = rowCount, column = 1)
+        # isbn10_field.value = isbn10
+        # doc.save('../excel/CMC_Fall_2018_bookstore_list.xlsm')

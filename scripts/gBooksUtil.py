@@ -31,14 +31,18 @@ invalidApiResponses = 0
 
 def isApiResponseValid(response):
     global invalidApiResponses
-    totalItems = response["totalItems"]
-
-    if (response["totalItems"] > 0):
-        return True
-    else:
-        print " No Response"
-        invalidApiResponses = invalidApiResponses + 1
+    print (response)
+    try:
+        if (response["totalItems"] > 0):
+            return True
+        else:
+            print " Bad Response"
+            invalidApiResponses = invalidApiResponses + 1
+            return False
+    except Exception as e:
+        print (e)
         return False
+
 
 # makeGoogleBooksApiCall
 #
@@ -55,7 +59,7 @@ def makeGoogleBooksApiCall(isbn):
 
     fields='&fields=items/volumeInfo(title,authors,industryIdentifiers),totalItems'
 
-    url = serviceurl + isbn + key +fields
+    url = serviceurl + str(isbn) + key +fields
 
     #get a handle by urlopen
     uh = urllib.urlopen(url)
@@ -89,6 +93,7 @@ def parseOtherIsbn(isbn, response):
     global isbnCallCount
     global findsOtherIsbn
 
+    isbn = str(isbn)
     isbnCallCount = isbnCallCount + 1
 
     try:
@@ -157,14 +162,12 @@ def parseTitle(response, existingTitle):
 
 # parseAuthors
 #
-# This function parses the response for any author(s). Returns the auhors if found
-# or existing author(s) if not found.
+# This function parses the response for any author(s). Returns the auhors if found.
 #
 # @param    dictionary  response
-# @param    string      existing author
-# @return   string      author(s) (existing or from response)
+# @return   string      author(s) (from response)
 
-def parseAuthors(response, existingAuthor):
+def parseAuthors(response):
     try:
         author = response["items"][0]["volumeInfo"]["authors"][0].encode('utf-8')
     except IndexError:
@@ -175,14 +178,14 @@ def parseAuthors(response, existingAuthor):
         return existingAuthor
 
     #check for additionalAuthors
-    allAuthors = author
+    allAuthors = [author]
     index =1
 
     while (index > 0):
         try:
             author = response["items"][0]["volumeInfo"]["authors"][index].encode('utf-8')
             index = index +1
-            allAuthors = allAuthors + ', ' + author
+            allAuthors.append(author)
         except IndexError:
             index = -1
 
