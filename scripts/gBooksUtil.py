@@ -31,7 +31,6 @@ invalidApiResponses = 0
 
 def isApiResponseValid(response):
     global invalidApiResponses
-    print (response)
     try:
         if (response["totalItems"] > 0):
             return True
@@ -171,11 +170,11 @@ def parseAuthors(response):
     try:
         author = response["items"][0]["volumeInfo"]["authors"][0].encode('utf-8')
     except IndexError:
-        print " Index Error at at [items][0][volumeInfo][authors] for book with title: " + existingAuthor
-        return existingAuthor
+        print " Index Error at at [items][0][volumeInfo][authors]"
+        return ""
     except KeyError:
-        print " Key Error: at [items][0][volumeInfo][authors] for book with title: " + existingAuthor
-        return existingAuthor
+        print " Key Error: at [items][0][volumeInfo][authors]"
+        return ""
 
     #check for additionalAuthors
     allAuthors = [author]
@@ -189,4 +188,4 @@ def parseAuthors(response):
         except IndexError:
             index = -1
 
-    return allAuthors
+    return ", ".join(allAuthors)

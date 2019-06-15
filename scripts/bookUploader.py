@@ -11,8 +11,9 @@ from data_utils import *
 doc = openpyxl.load_workbook('../excel/CMC_Fall_2018_bookstore_list.xlsx', read_only = True, data_only = True)
 print (doc.sheetnames)
 doc = doc.active
-startpoint = 'AE' + str(2)
-endpoint = 'AG' + str(10)
+start_index = 275
+startpoint = 'AF' + str(start_index)
+endpoint = 'AZ' + str(275)
 sheet = doc[startpoint:endpoint]
 
 #Database Actions
@@ -25,9 +26,8 @@ cursor=database.cursor()
 # insert_departments(sheet, cursor, database, dept_dict_18f)
 # insert_professors(sheet, cursor, database, prof_dict_18f)
 # insert_courses(sheet, cursor, database, 2, 22, 23, prof_dict_18f)
-# insert_course_depts(sheet, cursor, database, 26, 27, dept_dict_18f, course_code_to_id_map_18f)
+# insert_course_depts(sheet, cursor, database, 0, 1, dept_dict_18f, course_code_to_id_map_18f)
 # insert_books(sheet, cursor, database, books_dict_18f)
 # insert_course_books(sheet, cursor, database, books_dict_18f, course_code_to_id_map_18f)
-print( "before" )
-write_google_books_api_responses(doc, sheet)
-print( "after" )
+# update_courses(sheet, cursor, database, 0, dept_dict_18f)
+# write_google_books_api_responses(sheet, cursor, database,start_index)

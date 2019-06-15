@@ -77,29 +77,28 @@ def insert_courses(sheet, cursor, database, semester_id, i, j, prof_dict):
     print ("Succesfully inserted all courses")
 
 #unique only
-def insert_course_depts(sheet, cursor, database, i, j, dept_dict, course_code_to_id_map):
+def update_courses(sheet, cursor, database, i, dept_dict):
     rowList = []
     rowCount = 0
     for row in sheet:
         for cell in row:
             rowList.append(cell.value)
-        rowCount = rowCount + 1
+        print (rowList)
         print (rowCount)
-        # if (rowList[i] is None):
-        #     print ("End of column reached. break.")
-        #     break
+        rowCount = rowCount + 1
         try:
+            if (rowList[i] is None):
+                print ("End of column reached. break.")
+                break
             dept_id = dept_dict.get(encoder(rowList[i]))
-            course_id = course_code_to_id_map.get(encoder(rowList[j]))
-            cursor.execute(course_dept_insert_query, (course_id, dept_id,))
+            cursor.execute(update_course_query, (dept_id, rowCount,))
             rowList = []
             database.commit()
         except Exception as e:
-            print ("dept is " + encoder(rowList[i]) )
-            print ("dept id is " + str(dept_id) )
-            print ("course is " + encoder(rowList[j]) )
+            print ("dept id is " + course )
             raise
-    print ("Succesfully inserted all course departments")
+
+    print ("Succesfully updated all courses")
 
 def insert_course_books(sheet, cursor, database, book_dict, course_code_to_id_map):
     rowList = []
@@ -124,15 +123,12 @@ def insert_course_books(sheet, cursor, database, book_dict, course_code_to_id_ma
         database.commit()
     print ("Succesfully inserted all course departments")
 
-def write_google_books_api_responses(doc, sheet):
-    print("start of function")
+def write_google_books_api_responses(sheet, cursor, database, row_index):
     rowList = []
-    rowCount = 0
-    unique_authors = []
+    rowCount = row_index - 1
     for row in sheet:
         for cell in row:
             rowList.append(cell.value)
-        rowCount = rowCount + 1
         print (rowCount)
         isbn13 = rowList[0]
         existingTitle = rowList[2]
@@ -140,13 +136,16 @@ def write_google_books_api_responses(doc, sheet):
         print (existingTitle)
         response = makeGoogleBooksApiCall(isbn13)
         if not isApiResponseValid(response):
+            rowCount = rowCount + 1
+            rowList = []
             continue
         isbn10 = parseOtherIsbn(isbn13, response)
         title = parseTitle(response, existingTitle)
         authors = parseAuthors(response)
-        print (str(isbn10))
-        print (str(title))
+        print (title)
         print (authors)
-        # isbn10_field = sheet.cell(row = rowCount, column = 1)
-        # isbn10_field.value = isbn10
-        # doc.save('../excel/CMC_Fall_2018_bookstore_list.xlsm')
+        print (isbn10)
+        cursor.execute(update_books_from_api_query, (isbn10, title, authors, rowCount,))
+        database.commit()
+        rowCount = rowCount + 1
+        rowList = []
