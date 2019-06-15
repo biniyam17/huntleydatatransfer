@@ -25,12 +25,50 @@ def insert_departments(sheet, cursor, database, dict):
         database.commit()
     print ("Succesfully inserted all departments")
 
+def insert_departments_v2(sheet, cursor, database, i):
+    rowList = []
+    rows_inserted = 0
+    for row in sheet:
+        for cell in row:
+            rowList.append(cell.value)
+        dept = encoder(rowList[i])
+        cursor.execute(select_dept_query, (dept,))
+        count = cursor.fetchall()[0][0]
+        print ("dept: " + str(dept) + " " + str(count))
+        if (count == 0):
+            rows_inserted = rows_inserted + 1
+            cursor.execute(department_insert_query, (dept,))
+            database.commit()
+        rowList = []
+    print ("Succesfully inserted " + str(rows_inserted) + " departments")
+
+
 #unique only
 def insert_professors(sheet, cursor, database, dict):
     for prof in dict:
         cursor.execute(professor_insert_query, (prof,))
     database.commit()
     print ("Succesfully inserted all professors")
+
+def insert_professors_v2(sheet, cursor, database, i):
+    rowList = []
+    rows_inserted = 0
+    for row in sheet:
+        for cell in row:
+            rowList.append(cell.value)
+        if (rowList[i] is None):
+            print ("End of column reached. break.")
+            break
+        prof = encoder(rowList[i])
+        cursor.execute(select_prof_query, (prof,))
+        count = cursor.fetchall()[0][0]
+        print ("prof: " + str(prof) + " " + str(count))
+        if (count == 0):
+            rows_inserted = rows_inserted + 1
+            cursor.execute(professor_insert_query, (prof,))
+            database.commit()
+        rowList = []
+    print ("Succesfully inserted " + str(rows_inserted) + " professors")
 
 #unique only
 def insert_books(sheet, cursor, database, dict):
@@ -75,6 +113,28 @@ def insert_courses(sheet, cursor, database, semester_id, i, j, prof_dict):
             raise
 
     print ("Succesfully inserted all courses")
+
+#insert all b/c semester specific
+def insert_courses_v2(sheet, cursor, database, i, semester_id):
+    rowList = []
+    rows_inserted = 0
+    for row in sheet:
+        for cell in row:
+            rowList.append(cell.value)
+        print (rowList)
+        if (rowList[i] is None):
+            print ("End of column reached. break.")
+            break
+        code = encoder(rowList[i])
+        prof = encoder(rowList[i+1])
+        print ("course code: " + str(code))
+        cursor.execute(select_prof_query2, (prof,))
+        prof_id = cursor.fetchone()[0]
+        cursor.execute(course_insert_query, (prof_id, semester_id, code,))
+        database.commit()
+        rows_inserted = rows_inserted + 1
+        rowList = []
+    print ("Succesfully inserted " + str(rows_inserted) + " courses")
 
 #unique only
 def update_courses(sheet, cursor, database, i, dept_dict):

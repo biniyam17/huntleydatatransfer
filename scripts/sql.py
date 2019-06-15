@@ -21,3 +21,14 @@ update_course_query = (
 update_books_from_api_query = (
 "UPDATE books SET isbn10 = %s, title = %s, author = %s WHERE book_id = %s"
 )
+
+select_dept_query = (
+"SELECT COUNT(code) FROM school_departments WHERE code = %s"
+)
+select_prof_query = (
+"SELECT COUNT(last_name) FROM professors WHERE last_name = %s"
+)
+
+select_prof_query2 = (
+"SELECT professor_id FROM professors WHERE last_name = %s"
+)
