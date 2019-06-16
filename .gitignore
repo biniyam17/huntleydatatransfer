@@ -1,6 +1,6 @@
+scripts/util.py
 *.DS_Store
 .idea/
 *.pyc
 *~$
-config.py
-utils.py
+*config.py
