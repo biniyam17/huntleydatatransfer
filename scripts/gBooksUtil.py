@@ -166,15 +166,15 @@ def parseTitle(response, existingTitle):
 # @param    dictionary  response
 # @return   string      author(s) (from response)
 
-def parseAuthors(response):
+def parseAuthors(response, existingAuthor):
     try:
         author = response["items"][0]["volumeInfo"]["authors"][0].encode('utf-8')
     except IndexError:
         print " Index Error at at [items][0][volumeInfo][authors]"
-        return ""
+        return existingAuthor
     except KeyError:
         print " Key Error: at [items][0][volumeInfo][authors]"
-        return ""
+        return existingAuthor
 
     #check for additionalAuthors
     allAuthors = [author]

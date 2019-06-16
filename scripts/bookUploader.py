@@ -13,8 +13,8 @@ doc = openpyxl.load_workbook('../excel/CMC_Spring_2019_bookstore_list.xlsx', rea
 print (doc.sheetnames)
 doc = doc.active
 start_index = 2
-startpoint = 'S' + str(start_index)
-endpoint = 'T' + str(300)
+startpoint = 'F' + str(start_index)
+endpoint = 'M' + str(10)
 sheet = doc[startpoint:endpoint]
 
 #Database Actions
@@ -33,4 +33,7 @@ cursor=database.cursor()
 
 # insert_departments_v2(sheet, cursor, database, 0)
 # insert_professors_v2(sheet, cursor, database, 0)
-insert_courses_v2(sheet, cursor, database, 0, 3)
+# insert_courses_v2(sheet, cursor, database, 0, 3)
+# write_google_books_api_responses_v2(sheet, cursor, database, start_index)
+# insert_course_books_v2(sheet, cursor, database, 3, start_index)
+insert_huntley_data(sheet, cursor, database, start_index)
