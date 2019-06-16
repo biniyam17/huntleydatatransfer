@@ -144,10 +144,10 @@ def parseOtherIsbn(isbn, response):
 # existing title if not found.
 #
 # @param    dictionary  response
-# @param    string      existing title
+# @param    string      existing title or default paramter of empty string
 # @return   string      title (existing or from response)
 
-def parseTitle(response, existingTitle):
+def parseTitle(response, existingTitle = ""):
     try:
         title = response["items"][0]["volumeInfo"]["title"].encode('utf-8')
         # print title
@@ -161,19 +161,21 @@ def parseTitle(response, existingTitle):
 
 # parseAuthors
 #
-# This function parses the response for any author(s). Returns the auhors if found.
+# This function parses the response for any author(s). Returns the auhors if found
+# or existing author if not found.
 #
 # @param    dictionary  response
-# @return   string      author(s) (from response)
+# @param    string      existing title or default paramter of empty string
+# @return   string      comma joined list of author(s) (from response)
 
-def parseAuthors(response, existingAuthor):
+def parseAuthors(response, existingAuthor = ""):
     try:
         author = response["items"][0]["volumeInfo"]["authors"][0].encode('utf-8')
     except IndexError:
-        print " Index Error at at [items][0][volumeInfo][authors]"
+        print " Index Error at at [items][0][volumeInfo][authors]" + existingAuthor
         return existingAuthor
     except KeyError:
-        print " Key Error: at [items][0][volumeInfo][authors]"
+        print " Key Error: at [items][0][volumeInfo][authors]" + existingAuthor
         return existingAuthor
 
     #check for additionalAuthors
