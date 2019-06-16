@@ -32,7 +32,7 @@ def insert_departments_v2(sheet, cursor, database, i):
         for cell in row:
             rowList.append(cell.value)
         dept = encoder(rowList[i])
-        cursor.execute(select_dept_query, (dept,))
+        cursor.execute(count_dept_query, (dept,))
         count = cursor.fetchall()[0][0]
         print ("dept: " + str(dept) + " " + str(count))
         if (count == 0):
@@ -60,7 +60,7 @@ def insert_professors_v2(sheet, cursor, database, i):
             print ("End of column reached. break.")
             break
         prof = encoder(rowList[i])
-        cursor.execute(select_prof_query, (prof,))
+        cursor.execute(count_prof_query, (prof,))
         count = cursor.fetchall()[0][0]
         print ("prof: " + str(prof) + " " + str(count))
         if (count == 0):
@@ -129,9 +129,9 @@ def insert_courses_v2(sheet, cursor, database, i, semester_id):
         code = encoder(rowList[i+1])
         prof = encoder(rowList[i+2])
         print ("course code: " + str(code))
-        cursor.execute(select_prof_query2, (prof,))
+        cursor.execute(select_prof_query, (prof,))
         prof_id = cursor.fetchone()[0]
-        cursor.execute(select_dept_query2, (dept,))
+        cursor.execute(select_dept_query, (dept,))
         dept_id = cursor.fetchone()[0]
         cursor.execute(course_insert_query, (prof_id, semester_id, code, dept_id,))
         database.commit()
@@ -205,16 +205,16 @@ def insert_course_books_v2(sheet, cursor, database, semester_id, row_index):
         if (rowList[0] is None and rowList[1] is None):
             print ("End of column reached. break.")
             break
-        cursor.execute(select_prof_query2, (prof,))
+        cursor.execute(select_prof_query, (prof,))
         prof_id = cursor.fetchall()[0][0]
-        cursor.execute(select_dept_query2, (dept,))
+        cursor.execute(select_dept_query, (dept,))
         dept_id = cursor.fetchall()[0][0]
         cursor.execute(select_course_query, (prof_id, semester_id, dept_id,))
         course_id = cursor.fetchall()[0][0]
-        cursor.execute(select_book_id_query, (isbn13,))
+        cursor.execute(select_book_query, (isbn13,))
         book_id = cursor.fetchall()[0][0]
         #check if duplicate exists because of sections in class
-        cursor.execute(select_course_count_query, (book_id, course_id,))
+        cursor.execute(count_course_query, (book_id, course_id,))
         count = cursor.fetchall()[0][0]
         if (count == 0):
             cursor.execute(course_book_insert_query, (book_id, course_id,))
@@ -246,7 +246,7 @@ def write_google_books_api_responses(sheet, cursor, database, row_index):
         print (title)
         print (authors)
         print (isbn10)
-        cursor.execute(update_books_from_api_query, (isbn10, title, authors, rowCount,))
+        cursor.execute(update_books_query, (isbn10, title, authors, rowCount,))
         database.commit()
         rowCount = rowCount + 1
         rowList = []
@@ -266,7 +266,7 @@ def write_google_books_api_responses_v2(sheet, cursor, database, row_index):
         if (isbn13 is None and existingTitle is None):
             print ("End of column reached. break.")
             break
-        cursor.execute(select_book_query, (isbn13,))
+        cursor.execute(count_book_query, (isbn13,))
         count = cursor.fetchall()[0][0]
         print ("Exists: " + ('no' if count==0 else 'yes'))
         if (count == 0):
@@ -275,7 +275,7 @@ def write_google_books_api_responses_v2(sheet, cursor, database, row_index):
                 rowCount = rowCount + 1
                 rowList = []
                 rows_inserted = rows_inserted + 1
-                cursor.execute(insert_books_from_api_query, (isbn13, None, existingTitle, existingAuthor, edition,))
+                cursor.execute(books_insert_query, (isbn13, None, existingTitle, existingAuthor, edition,))
                 database.commit()
                 continue
             isbn10 = parseOtherIsbn(isbn13, response)
@@ -285,7 +285,7 @@ def write_google_books_api_responses_v2(sheet, cursor, database, row_index):
             print (authors)
             print (isbn10)
             rows_inserted = rows_inserted + 1
-            cursor.execute(insert_books_from_api_query, (isbn13, isbn10, title[:199], authors[:199], edition,))
+            cursor.execute(books_insert_query, (isbn13, isbn10, title[:199], authors[:199], edition,))
             database.commit()
         rowCount = rowCount + 1
         rowList = []
@@ -298,27 +298,27 @@ def insert_huntley_data(sheet, cursor, database, row_index):
         for cell in row:
             rowList.append(cell.value)
         print (rowCount)
-        isbn13 = rowList[0]
-        if (isbn13 is None):
-            print ("End of column reached. break.")
-            break
-        print (type(rowList))
-        new_shelf_price = doublify(removeDollarSign(rowList[4]))
-        used_shelf_price = doublify(removeDollarSign(rowList[5]))
-        new_rental_price = doublify(removeDollarSign(rowList[6]))
-        used_rental_price = doublify(removeDollarSign(rowList[7]))
-        cursor.execute(select_book_id_query, (isbn13,))
-        book_id = cursor.fetchall()[0][0]
-        print (type(used_shelf_price))
-        print (used_shelf_price)
-        cursor.execute(insert_huntley_data, (new_shelf_price,used_shelf_price,new_rental_price,used_rental_price,))
+        # isbn13 = rowList[0]
+        # if (isbn13 is None):
+        #     print ("End of column reached. break.")
+        #     break
+        # new_shelf_price = doublify(sanitize_price(rowList[4]))
+        # used_shelf_price = doublify(sanitize_price(rowList[5]))
+        # new_rental_price = doublify(sanitize_price(rowList[6]))
+        # used_rental_price = doublify(sanitize_price(rowList[7]))
+        # cursor.execute(select_book_query, (isbn13,))
+        # book_id = cursor.fetchall()[0][0]
+        # print (book_id)
+        # print (type(new_shelf_price))
+        # print (new_shelf_price)
+        values = (rowCount, "89",)
+        cursor.execute(huntley_insert_query, values )
         database.commit()
         rowList = []
     print ("Finished uploading huntley prices")
 
 def doublify(number):
-    return float(number)
+    return str(number)
 
-def removeDollarSign(input):
-    input_1 = input).encode('utf-8').strip()
-    return input_1.replace("$","")
+def sanitize_price(input):
+    return input
