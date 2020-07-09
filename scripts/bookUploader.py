@@ -4,17 +4,18 @@ import mysql.connector
 import re
 
 from config import port, database, user, password
-from data_2018_fall import *
+# from data_2018_fall import *
 from data_utils import *
 
 #Workbook Actions
 # doc = openpyxl.load_workbook('../excel/CMC_Fall_2018_bookstore_list.xlsx', read_only = True, data_only = True)
-doc = openpyxl.load_workbook('../excel/CMC_Spring_2019_bookstore_list.xlsx', read_only = True, data_only = True)
+# doc = openpyxl.load_workbook('../excel/CMC_Spring_2019_bookstore_list.xlsx', read_only = True, data_only = True)
+doc = openpyxl.load_workbook('../excel/Fall2019_Courses.xlsx', read_only = True, data_only = True)
 print (doc.sheetnames)
 doc = doc.active
 start_index = 2
-startpoint = 'F' + str(start_index)
-endpoint = 'M' + str(10)
+startpoint = 'A' + str(start_index)
+endpoint = 'H' + str(1498)
 sheet = doc[startpoint:endpoint]
 
 #Database Actions
@@ -37,3 +38,11 @@ cursor=database.cursor()
 # write_google_books_api_responses_v2(sheet, cursor, database, start_index)
 # insert_course_books_v2(sheet, cursor, database, 3, start_index)
 # insert_huntley_data(sheet, cursor, database, start_index)
+
+# Fall 2019 transfer - BE CAREFUL ABOUT DUPLICATE SECTIONS
+insert_books(sheet, cursor, database)
+insert_departments_v2(sheet, cursor, database)
+insert_professors_v2(sheet, cursor, database)
+insert_courses_v2(sheet, cursor, database)
+insert_course_books_v2(sheet, cursor, database)
+
